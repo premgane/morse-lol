@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Morse LOL/LMAO Translator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      font-size: 1rem;
+    }
+    #output {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+    button {
+      margin-top: 0.5rem;
+      margin-right: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>LOL/LMAO Morse Translator</h1>
+  <textarea id="input" placeholder="Enter text or lol/lmao code..."></textarea><br>
+  <button onclick="toFunnyMorse()">Convert to LOL/LMAO</button>
+  <button onclick="fromFunnyMorse()">Convert back to Text</button>
+  <div id="output"></div>
+
+  <script>
+    const morseCodeMap = {
+      'A': '.-',    'B': '-...',  'C': '-.-.',  'D': '-..',
+      'E': '.',     'F': '..-.',  'G': '--.',   'H': '....',
+      'I': '..',    'J': '.---',  'K': '-.-',   'L': '.-..',
+      'M': '--',    'N': '-.',    'O': '---',   'P': '.--.',
+      'Q': '--.-',  'R': '.-.',   'S': '...',   'T': '-',
+      'U': '..-',   'V': '...-',  'W': '.--',   'X': '-..-',
+      'Y': '-.--',  'Z': '--..',
+      '0': '-----', '1': '.----', '2': '..---', '3': '...--',
+      '4': '....-', '5': '.....', '6': '-....', '7': '--...',
+      '8': '---..', '9': '----.',
+      ' ': '/'
+    };
+
+    const reverseMorseCodeMap = {};
+    for (let key in morseCodeMap) {
+      reverseMorseCodeMap[morseCodeMap[key]] = key;
+    }
+
+    function toFunnyMorse() {
+      const input = document.getElementById('input').value.toUpperCase();
+      let morse = '';
+
+      for (let char of input) {
+        if (morseCodeMap[char]) {
+          morse += morseCodeMap[char] + ' ';
+        }
+      }
+
+      const funny = morse.trim().replace(/\./g, 'lol').replace(/-/g, 'lmao');
+      document.getElementById('output').textContent = funny;
+    }
+
+    function fromFunnyMorse() {
+      const input = document.getElementById('input').value.trim();
+
+      // Convert lol/lmao back to . and -
+      const morse = input
+        .replace(/lmao/g, '-')
+        .replace(/lol/g, '.');
+
+      // Split Morse code back into letters
+      const words = morse.trim().split(' / ');
+      const decodedWords = words.map(word => {
+        return word.split(' ').map(code => reverseMorseCodeMap[code] || '').join('');
+      });
+
+      const result = decodedWords.join(' ');
+      document.getElementById('output').textContent = result;
+    }
+  </script>
+</body>
+</html>
+
