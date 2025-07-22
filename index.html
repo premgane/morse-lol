@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,9 +7,26 @@
   <style>
     :root {
       --primary: #0077cc;
-      --light-gray: #f9f9f9;
-      --border: #ddd;
       --radius: 10px;
+
+      /* default: light mode */
+      --bg: white;
+      --fg: #333;
+      --box-bg: #f9f9f9;
+      --border: #ddd;
+      --button-fg: white;
+      --button-bg: var(--primary);
+      --button-hover: #005fa3;
+    }
+
+    html[data-theme="dark"] {
+      --bg: #121212;
+      --fg: #f0f0f0;
+      --box-bg: #1e1e1e;
+      --border: #444;
+      --button-fg: white;
+      --button-bg: #228be6;
+      --button-hover: #1c7ed6;
     }
 
     * {
@@ -20,10 +37,11 @@
       font-family: system-ui, sans-serif;
       margin: 0;
       padding: 1.5rem;
-      background: white;
-      color: #333;
+      background: var(--bg);
+      color: var(--fg);
       max-width: 800px;
       margin-inline: auto;
+      transition: background 0.2s ease, color 0.2s ease;
     }
 
     h1, h2 {
@@ -32,11 +50,26 @@
       margin-bottom: 0.5rem;
     }
 
+    .theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--button-bg);
+      color: var(--button-fg);
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
     textarea {
       width: 100%;
       height: 100px;
       font-size: 1rem;
       padding: 0.75rem;
+      background: var(--box-bg);
+      color: var(--fg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       margin-top: 0.25rem;
@@ -51,9 +84,14 @@
       margin-bottom: 1rem;
     }
 
+    .button-row > button {
+      font-size: 1.25rem;
+      padding: 1rem 1.5rem;
+    }
+
     button {
-      background-color: var(--primary);
-      color: white;
+      background-color: var(--button-bg);
+      color: var(--button-fg);
       border: none;
       border-radius: var(--radius);
       padding: 0.75rem 1.25rem;
@@ -61,10 +99,11 @@
       cursor: pointer;
       flex-shrink: 0;
       min-width: 140px;
+      transition: background 0.2s ease;
     }
 
     button:hover {
-      background-color: #005fa3;
+      background-color: var(--button-hover);
     }
 
     .output-container {
@@ -75,7 +114,7 @@
     }
 
     .output-box {
-      background: var(--light-gray);
+      background: var(--box-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.5rem 1rem 1rem;
@@ -85,8 +124,8 @@
     }
 
     .copy-button {
-      background: var(--primary);
-      color: white;
+      background: var(--button-bg);
+      color: var(--button-fg);
       border: none;
       border-radius: var(--radius);
       font-size: 1rem;
@@ -97,7 +136,7 @@
     }
 
     .copy-button:hover {
-      background-color: #005fa3;
+      background: var(--button-hover);
     }
 
     @media (min-width: 601px) {
@@ -126,6 +165,8 @@
   </style>
 </head>
 <body>
+  <button class="theme-toggle" onclick="toggleTheme()">☀️ light</button>
+
   <h1>lolmorse translator</h1>
 
   <label for="input">text or lolmorse:</label>
@@ -229,6 +270,26 @@
         button.disabled = false;
       });
     }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.getAttribute("data-theme") === "dark";
+      html.setAttribute("data-theme", isDark ? "light" : "dark");
+
+      const toggleBtn = document.querySelector('.theme-toggle');
+      toggleBtn.textContent = isDark ? '🌙 dark' : '☀️ light';
+    }
+
+    // Detect and apply system preference on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const html = document.documentElement;
+      html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+
+      const toggleBtn = document.querySelector('.theme-toggle');
+      toggleBtn.textContent = prefersDark ? '☀️ light' : '🌙 dark';
+    });
+
   </script>
 </body>
 </html>
