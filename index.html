@@ -1,69 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Morse LOL/LMAO + Word Sorter</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>lolmorse + word sorter</title>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      max-width: 700px;
-      margin: auto;
+    :root {
+      --primary: #0077cc;
+      --light-gray: #f9f9f9;
+      --border: #ddd;
+      --radius: 10px;
     }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: white;
+      color: #333;
+      max-width: 800px;
+      margin-inline: auto;
+    }
+
+    h1, h2 {
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
     textarea {
       width: 100%;
       height: 100px;
       font-size: 1rem;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 0.25rem;
+      margin-bottom: 1rem;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
       margin-bottom: 1rem;
     }
-    .output {
-      margin-top: 0.5rem;
-      padding: 1rem;
-      background: #f9f9f9;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      white-space: pre-wrap;
-      position: relative;
-    }
+
     button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.75rem 1.25rem;  /* bigger tap targets */
+      font-size: 1.1rem;         /* larger text */
+      cursor: pointer;
+      flex-shrink: 0;
+      min-width: 140px;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    .output-box {
+      position: relative;
+      background: var(--light-gray);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1rem 1rem;  /* top padding increased to leave space for copy icon */
       margin-top: 0.5rem;
-      margin-right: 0.5rem;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
+      min-height: 4rem;           /* enough to visually contain button */
+      overflow-wrap: anywhere;
     }
-    h2 {
-      margin-top: 2rem;
-    }
+
+
     .copy-button {
       position: absolute;
-      top: 8px;
-      right: 10px;
+      top: 0.5rem;
+      right: 0.75rem;
       background: none;
       border: none;
       font-size: 1.2rem;
       cursor: pointer;
+      color: #666;
     }
+
     .copy-button:hover {
-      color: #0077cc;
+      color: var(--primary);
+    }
+
+    .copy-status {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border: 1px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.9rem;
+      color: var(--primary);
+      display: none;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @media (max-width: 600px) {
+      textarea {
+        font-size: 1rem;
+        height: 80px;
+      }
+
+      button {
+        flex: 1;
+        text-align: center;
+      }
+
+      button {
+        width: 100%;            /* full width on mobile */
+        font-size: 1.2rem;
+        padding: 1rem;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>LOL/LMAO Morse Translator</h1>
+  <h1>lolmorse translator</h1>
 
-  <textarea id="input" placeholder="Enter text or lol/lmao code..."></textarea><br>
-  <button onclick="toFunnyMorse()">Convert to LOL/LMAO</button>
-  <button onclick="fromFunnyMorse()">Convert back to Text</button>
-  <div class="output" id="outputBox">
+  <label for="input">Text or lolmorse:</label>
+  <textarea id="input" placeholder="Enter plain text or LOL/LMAO here..."></textarea>
+  <div class="button-row">
+    <button onclick="toFunnyMorse()">Convert to lolmorse</button>
+    <button onclick="fromFunnyMorse()">Convert back to text</button>
+  </div>
+  <div class="output-box" id="outputBox">
     <button class="copy-button" onclick="copyToClipboard(event, 'output')">📋</button>
+    <div class="copy-status" id="status-output">Copied!</div>
     <div id="output"></div>
   </div>
 
   <h2>Alphabetize Words</h2>
-  <textarea id="sortInput" placeholder="Enter words to alphabetize..."></textarea><br>
-  <button onclick="alphabetizeWords()">Alphabetize</button>
-  <div class="output" id="sortOutputBox">
+
+  <label for="sortInput">Words to sort:</label>
+  <textarea id="sortInput" placeholder="Enter text to sort alphabetically..."></textarea>
+  <div class="button-row">
+    <button onclick="alphabetizeWords()">Alphabetize</button>
+  </div>
+  <div class="output-box" id="sortOutputBox">
     <button class="copy-button" onclick="copyToClipboard(event, 'sortOutput')">📋</button>
+    <div class="copy-status" id="status-sortOutput">Copied!</div>
     <div id="sortOutput"></div>
   </div>
 
@@ -78,8 +172,7 @@
       'Y': '-.--', 'Z': '--..',
       '0': '-----', '1': '.----', '2': '..---', '3': '...--',
       '4': '....-', '5': '.....', '6': '-....', '7': '--...',
-      '8': '---..', '9': '----.',
-      ' ': '/'
+      '8': '---..', '9': '----.', ' ': '/'
     };
 
     const reverseMorseCodeMap = {};
@@ -103,43 +196,38 @@
 
     function fromFunnyMorse() {
       const input = document.getElementById('input').value.trim();
-
-      const morse = input
-        .replace(/lmao/g, '-')
-        .replace(/lol/g, '.');
+      const morse = input.replace(/lmao/g, '-').replace(/lol/g, '.');
 
       const words = morse.trim().split(' / ');
-      const decodedWords = words.map(word => {
-        return word.split(' ').map(code => reverseMorseCodeMap[code] || '').join('');
-      });
+      const decoded = words.map(word =>
+        word.split(' ').map(code => reverseMorseCodeMap[code] || '').join('')
+      );
 
-      const result = decodedWords.join(' ');
-      document.getElementById('output').textContent = result;
+      document.getElementById('output').textContent = decoded.join(' ');
     }
 
     function alphabetizeWords() {
       const text = document.getElementById('sortInput').value;
-      const words = text
-        .trim()
-        .split(/\s+/)
-        .filter(w => w.length > 0)
+      const words = text.trim().split(/\s+/).filter(Boolean)
         .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
       document.getElementById('sortOutput').textContent = words.join(' ');
     }
 
-    function copyToClipboard(event, elementId) {
-      const text = document.getElementById(elementId).textContent;
+    function copyToClipboard(event, targetId) {
+      const text = document.getElementById(targetId).textContent;
+      const statusId = 'status-' + targetId;
+      const statusBox = document.getElementById(statusId);
+
       navigator.clipboard.writeText(text).then(() => {
-        const btn = event.target;
-        const original = btn.textContent;
-        btn.textContent = '✅';
-        setTimeout(() => { btn.textContent = original; }, 1000);
+        statusBox.style.display = 'block';
+        setTimeout(() => {
+          statusBox.style.display = 'none';
+        }, 1200);
       }).catch(err => {
-        alert('Failed to copy: ' + err);
+        alert('Copy failed: ' + err);
       });
     }
-
   </script>
 </body>
 </html>
