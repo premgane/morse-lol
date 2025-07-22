@@ -128,33 +128,33 @@
 <body>
   <h1>lolmorse translator</h1>
 
-  <label for="input">Text or lolmorse:</label>
-  <textarea id="input" placeholder="Enter plain text or LOL/LMAO here..."></textarea>
+  <label for="input">text or lolmorse:</label>
+  <textarea id="input" placeholder="enter plain text or lol/lmao here..."></textarea>
   <div class="button-row">
-    <button onclick="toFunnyMorse()">Convert to lolmorse</button>
-    <button onclick="fromFunnyMorse()">Convert back to text</button>
+    <button onclick="toFunnyMorse()">convert to lolmorse</button>
+    <button onclick="fromFunnyMorse()">convert back to text</button>
   </div>
 
   <div class="output-container">
     <div class="output-box" id="outputBox">
       <div id="output"></div>
     </div>
-    <button class="copy-button" id="copy-output" onclick="copyToClipboard(event, 'output')">📋 Copy</button>
+    <button class="copy-button" id="copy-output" onclick="copyToClipboard(event, 'output')">📋 copy</button>
   </div>
 
-  <h2>Alphabetize Words</h2>
+  <h2>alphabetize words</h2>
 
-  <label for="sortInput">Words to sort:</label>
-  <textarea id="sortInput" placeholder="Enter text to sort alphabetically..."></textarea>
+  <label for="sortInput">words to sort:</label>
+  <textarea id="sortInput" placeholder="enter text to sort alphabetically..."></textarea>
   <div class="button-row">
-    <button onclick="alphabetizeWords()">Alphabetize</button>
+    <button onclick="alphabetizeWords()">alphabetize</button>
   </div>
 
   <div class="output-container">
     <div class="output-box" id="sortOutputBox">
       <div id="sortOutput"></div>
     </div>
-    <button class="copy-button" id="copy-sortOutput" onclick="copyToClipboard(event, 'sortOutput')">📋 Copy</button>
+    <button class="copy-button" id="copy-sortOutput" onclick="copyToClipboard(event, 'sortOutput')">📋 copy</button>
   </div>
 
   <script>
@@ -215,7 +215,7 @@
       const button = event.currentTarget;
 
       const original = button.textContent;
-      button.textContent = '✅ Copied!';
+      button.textContent = '✅ copied!';
       button.disabled = true;
 
       navigator.clipboard.writeText(text).then(() => {
@@ -224,7 +224,7 @@
           button.disabled = false;
         }, 1200);
       }).catch(err => {
-        alert('Copy failed: ' + err);
+        alert('copy failed: ' + err);
         button.textContent = original;
         button.disabled = false;
       });
