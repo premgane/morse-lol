@@ -56,8 +56,8 @@
       color: white;
       border: none;
       border-radius: var(--radius);
-      padding: 0.75rem 1.25rem;  /* bigger tap targets */
-      font-size: 1.1rem;         /* larger text */
+      padding: 0.75rem 1.25rem;
+      font-size: 1.1rem;
       cursor: pointer;
       flex-shrink: 0;
       min-width: 140px;
@@ -67,68 +67,60 @@
       background-color: #005fa3;
     }
 
+    .output-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
     .output-box {
-      position: relative;
       background: var(--light-gray);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.5rem 1rem 1rem;  /* top padding increased to leave space for copy icon */
-      margin-top: 0.5rem;
-      min-height: 4rem;           /* enough to visually contain button */
+      padding: 1.5rem 1rem 1rem;
+      min-height: 4rem;
       overflow-wrap: anywhere;
+      flex-grow: 1;
     }
 
-
     .copy-button {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.75rem;
-      background: none;
+      background: var(--primary);
+      color: white;
       border: none;
-      font-size: 1.2rem;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      padding: 0.75rem 1.25rem;
       cursor: pointer;
-      color: #666;
+      text-align: center;
+      width: 100%;
     }
 
     .copy-button:hover {
-      color: var(--primary);
+      background-color: #005fa3;
     }
 
-    .copy-status {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      border: 1px solid var(--primary);
-      border-radius: var(--radius);
-      padding: 0.3rem 0.75rem;
-      font-size: 0.9rem;
-      color: var(--primary);
-      display: none;
-      pointer-events: none;
-      z-index: 1;
+    @media (min-width: 601px) {
+      .output-container {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .copy-button {
+        width: auto;
+        margin-left: 0.5rem;
+        align-self: stretch;
+      }
     }
 
     @media (max-width: 600px) {
-      textarea {
-        font-size: 1rem;
-        height: 80px;
-      }
-
-      button {
-        flex: 1;
-        text-align: center;
-      }
-
-      button {
-        width: 100%;            /* full width on mobile */
-        font-size: 1.2rem;
-        padding: 1rem;
-      }
-
       .button-row {
         flex-direction: column;
+      }
+
+      .copy-button {
+        font-size: 1.2rem;
+        padding: 1rem;
       }
     }
   </style>
@@ -142,10 +134,12 @@
     <button onclick="toFunnyMorse()">Convert to lolmorse</button>
     <button onclick="fromFunnyMorse()">Convert back to text</button>
   </div>
-  <div class="output-box" id="outputBox">
-    <button class="copy-button" onclick="copyToClipboard(event, 'output')">📋</button>
-    <div class="copy-status" id="status-output">Copied!</div>
-    <div id="output"></div>
+
+  <div class="output-container">
+    <div class="output-box" id="outputBox">
+      <div id="output"></div>
+    </div>
+    <button class="copy-button" id="copy-output" onclick="copyToClipboard(event, 'output')">📋 Copy</button>
   </div>
 
   <h2>Alphabetize Words</h2>
@@ -155,10 +149,12 @@
   <div class="button-row">
     <button onclick="alphabetizeWords()">Alphabetize</button>
   </div>
-  <div class="output-box" id="sortOutputBox">
-    <button class="copy-button" onclick="copyToClipboard(event, 'sortOutput')">📋</button>
-    <div class="copy-status" id="status-sortOutput">Copied!</div>
-    <div id="sortOutput"></div>
+
+  <div class="output-container">
+    <div class="output-box" id="sortOutputBox">
+      <div id="sortOutput"></div>
+    </div>
+    <button class="copy-button" id="copy-sortOutput" onclick="copyToClipboard(event, 'sortOutput')">📋 Copy</button>
   </div>
 
   <script>
@@ -216,16 +212,21 @@
 
     function copyToClipboard(event, targetId) {
       const text = document.getElementById(targetId).textContent;
-      const statusId = 'status-' + targetId;
-      const statusBox = document.getElementById(statusId);
+      const button = event.currentTarget;
+
+      const original = button.textContent;
+      button.textContent = '✅ Copied!';
+      button.disabled = true;
 
       navigator.clipboard.writeText(text).then(() => {
-        statusBox.style.display = 'block';
         setTimeout(() => {
-          statusBox.style.display = 'none';
+          button.textContent = original;
+          button.disabled = false;
         }, 1200);
       }).catch(err => {
         alert('Copy failed: ' + err);
+        button.textContent = original;
+        button.disabled = false;
       });
     }
   </script>
