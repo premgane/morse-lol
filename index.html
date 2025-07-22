@@ -183,6 +183,21 @@
     <button class="copy-button" id="copy-output" onclick="copyToClipboard(event, 'output')">📋 copy</button>
   </div>
 
+  <h2>randomize vowels</h2>
+
+  <label for="vowelInput">text to randomize:</label>
+  <textarea id="vowelInput" placeholder="enter text..."></textarea>
+  <div class="button-row">
+    <button onclick="randomizeVowels()">randomize vowels</button>
+  </div>
+
+  <div class="output-container">
+    <div class="output-box" id="vowelOutputBox">
+      <div id="vowelOutput"></div>
+    </div>
+    <button class="copy-button" id="copy-vowelOutput" onclick="copyToClipboard(event, 'vowelOutput')">📋 copy</button>
+  </div>
+
   <h2>alphabetize words</h2>
 
   <label for="sortInput">words to sort:</label>
@@ -289,6 +304,24 @@
       const toggleBtn = document.querySelector('.theme-toggle');
       toggleBtn.textContent = prefersDark ? '☀️ light' : '🌙 dark';
     });
+
+
+    function randomizeVowels() {
+      const vowels = ['a', 'e', 'i', 'o', 'u'];
+      const text = document.getElementById('vowelInput').value;
+
+      const randomized = text.split('').map(char => {
+        const lower = char.toLowerCase();
+        if (vowels.includes(lower)) {
+          const randVowel = vowels[Math.floor(Math.random() * vowels.length)];
+          return char === lower ? randVowel : randVowel.toUpperCase();
+        }
+        return char;
+      }).join('');
+
+      document.getElementById('vowelOutput').textContent = randomized;
+    }
+
 
   </script>
 </body>
