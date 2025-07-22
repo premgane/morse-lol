@@ -17,12 +17,13 @@
       margin-bottom: 1rem;
     }
     .output {
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       padding: 1rem;
       background: #f9f9f9;
       border: 1px solid #ccc;
       border-radius: 8px;
       white-space: pre-wrap;
+      position: relative;
     }
     button {
       margin-top: 0.5rem;
@@ -33,6 +34,18 @@
     h2 {
       margin-top: 2rem;
     }
+    .copy-button {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .copy-button:hover {
+      color: #0077cc;
+    }
   </style>
 </head>
 <body>
@@ -41,22 +54,28 @@
   <textarea id="input" placeholder="Enter text or lol/lmao code..."></textarea><br>
   <button onclick="toFunnyMorse()">Convert to LOL/LMAO</button>
   <button onclick="fromFunnyMorse()">Convert back to Text</button>
-  <div id="output" class="output"></div>
+  <div class="output" id="outputBox">
+    <button class="copy-button" onclick="copyToClipboard(event, 'output')">📋</button>
+    <div id="output"></div>
+  </div>
 
   <h2>Alphabetize Words</h2>
   <textarea id="sortInput" placeholder="Enter words to alphabetize..."></textarea><br>
   <button onclick="alphabetizeWords()">Alphabetize</button>
-  <div id="sortOutput" class="output"></div>
+  <div class="output" id="sortOutputBox">
+    <button class="copy-button" onclick="copyToClipboard(event, 'sortOutput')">📋</button>
+    <div id="sortOutput"></div>
+  </div>
 
   <script>
     const morseCodeMap = {
-      'A': '.-',    'B': '-...',  'C': '-.-.',  'D': '-..',
-      'E': '.',     'F': '..-.',  'G': '--.',   'H': '....',
-      'I': '..',    'J': '.---',  'K': '-.-',   'L': '.-..',
-      'M': '--',    'N': '-.',    'O': '---',   'P': '.--.',
-      'Q': '--.-',  'R': '.-.',   'S': '...',   'T': '-',
-      'U': '..-',   'V': '...-',  'W': '.--',   'X': '-..-',
-      'Y': '-.--',  'Z': '--..',
+      'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..',
+      'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
+      'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+      'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
+      'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-',
+      'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+      'Y': '-.--', 'Z': '--..',
       '0': '-----', '1': '.----', '2': '..---', '3': '...--',
       '4': '....-', '5': '.....', '6': '-....', '7': '--...',
       '8': '---..', '9': '----.',
@@ -108,6 +127,19 @@
 
       document.getElementById('sortOutput').textContent = words.join(' ');
     }
+
+    function copyToClipboard(event, elementId) {
+      const text = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        const original = btn.textContent;
+        btn.textContent = '✅';
+        setTimeout(() => { btn.textContent = original; }, 1000);
+      }).catch(err => {
+        alert('Failed to copy: ' + err);
+      });
+    }
+
   </script>
 </body>
 </html>
